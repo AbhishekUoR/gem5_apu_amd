@@ -1,0 +1,141 @@
+# Node ID f33fef5a3100f5b0efe667a1d7ffe13e88546efa
+# Parent  f2889f0b95cf7f3807e7eb89fa1bf1a0cdd9cdd8
+diff --git a/configs/common/Options.py b/configs/common/Options.py
+--- a/configs/common/Options.py
++++ b/configs/common/Options.py
+@@ -147,6 +147,8 @@
+ 
+     # Enable Ruby
+     parser.add_option("--ruby", action="store_true")
++    parser.add_option("--disable-sanity-check", action="callback",
++                      callback=m5.disableSanityCheck)
+ 
+     # Run duration options
+     parser.add_option("-m", "--abs-max-tick", type="int", default=m5.MaxTick,
+diff --git a/src/mem/qport.hh b/src/mem/qport.hh
+--- a/src/mem/qport.hh
++++ b/src/mem/qport.hh
+@@ -95,6 +95,12 @@
+      * functional request. */
+     bool checkFunctional(PacketPtr pkt)
+     { return respQueue.checkFunctional(pkt); }
++
++    /**
++     * Disables the sanity check assertion within the interal packet_queue.
++     */
++    void disableSanityCheck()
++    { respQueue.disableSanityCheck(); }
+ };
+ 
+ /**
+@@ -164,6 +170,12 @@
+         return reqQueue.checkFunctional(pkt) ||
+             snoopRespQueue.checkFunctional(pkt);
+     }
++
++    /**
++     * Disables the sanity check assertion within the interal packet_queue.
++     */
++    void disableSanityCheck()
++    { reqQueue.disableSanityCheck(); snoopRespQueue.disableSanityCheck(); }
+ };
+ 
+ #endif // __MEM_QPORT_HH__
+diff --git a/src/python/m5/params.py b/src/python/m5/params.py
+--- a/src/python/m5/params.py
++++ b/src/python/m5/params.py
+@@ -1896,6 +1896,7 @@
+     # Call C++ to create corresponding port connection between C++ objects
+     def ccConnect(self):
+         from m5.internal.pyobject import connectPorts
++        from m5 import sanityCheckDisabled
+ 
+         if self.role == 'SLAVE':
+             # do nothing and let the master take care of it
+@@ -1916,7 +1917,8 @@
+         try:
+             # self is always the master and peer the slave
+             connectPorts(self.simobj.getCCObject(), self.name, self.index,
+-                         peer.simobj.getCCObject(), peer.name, peer.index)
++                         peer.simobj.getCCObject(), peer.name, peer.index,
++                         sanityCheckDisabled())
+         except:
+             print "Error connecting port %s.%s to %s.%s" % \
+                   (self.simobj.path(), self.name,
+diff --git a/src/python/m5/simulate.py b/src/python/m5/simulate.py
+--- a/src/python/m5/simulate.py
++++ b/src/python/m5/simulate.py
+@@ -316,3 +316,11 @@
+         new_cpu.takeOverFrom(old_cpu)
+ 
+ from internal.core import disableAllListeners
++
++_sanity_check_disabled = False
++def disableSanityCheck(option, opt_str, value, parser):
++    global _sanity_check_disabled
++    _sanity_check_disabled = True
++
++def sanityCheckDisabled():
++    return _sanity_check_disabled
+diff --git a/src/python/swig/pyobject.hh b/src/python/swig/pyobject.hh
+--- a/src/python/swig/pyobject.hh
++++ b/src/python/swig/pyobject.hh
+@@ -49,7 +49,8 @@
+  * Connect the described MemObject ports.  Called from Python via SWIG.
+  */
+ int connectPorts(SimObject *o1, const std::string &name1, int i1,
+-    SimObject *o2, const std::string &name2, int i2);
++    SimObject *o2, const std::string &name2, int i2,
++    bool disableSanityCheck);
+ 
+ 
+ inline void
+diff --git a/src/python/swig/pyobject.cc b/src/python/swig/pyobject.cc
+--- a/src/python/swig/pyobject.cc
++++ b/src/python/swig/pyobject.cc
+@@ -70,11 +70,14 @@
+ /**
+  * Connect the described MemObject ports.  Called from Python via SWIG.
+  * The indices i1 & i2 will be -1 for regular ports, >= 0 for vector ports.
+- * SimObject1 is the master, and SimObject2 is the slave
++ * SimObject1 is the master, and SimObject2 is the slave.
++ * disableSanityCheck specifies if packet_queue sanity check should be
++ * disabled for Queued-type ports.
+  */
+ int
+ connectPorts(SimObject *o1, const std::string &name1, int i1,
+-             SimObject *o2, const std::string &name2, int i2)
++             SimObject *o2, const std::string &name2, int i2,
++             bool disableSanityCheck)
+ {
+ #if THE_ISA != NULL_ISA
+     if (FullSystem) {
+@@ -130,6 +133,15 @@
+ 
+     masterPort.bind(slavePort);
+ 
++    // for queued specific ports disable sanity check if desired
++    if (disableSanityCheck) {
++        QueuedMasterPort *mp = dynamic_cast<QueuedMasterPort*>(&masterPort);
++        QueuedSlavePort *sp = dynamic_cast<QueuedSlavePort*>(&slavePort);
++
++        if (mp) mp->disableSanityCheck();
++        if (sp) sp->disableSanityCheck();
++    }
++
+     return 1;
+ }
+ 
+diff --git a/src/python/swig/pyobject.i b/src/python/swig/pyobject.i
+--- a/src/python/swig/pyobject.i
++++ b/src/python/swig/pyobject.i
+@@ -39,7 +39,8 @@
+ %include <stdint.i>
+ 
+ int connectPorts(SimObject *o1, const std::string &name1, int i1,
+-                 SimObject *o2, const std::string &name2, int i2);
++                 SimObject *o2, const std::string &name2, int i2,
++                 bool disableSanityCheck);
+ 
+ %wrapper %{
+ // Convert a pointer to the Python object that SWIG wraps around a

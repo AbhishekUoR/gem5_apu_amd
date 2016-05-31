@@ -1,0 +1,287 @@
+gem5 Simulator System.  http://gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 compiled Apr 20 2016 11:03:34
+gem5 started Apr 25 2016 20:56:17
+gem5 executing on bg2, pid 96200
+command line: build/HSAIL_X86/gem5.opt configs/example/apu_se.py --help
+
+Usage: apu_se.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  --list-cpu-types      List available CPU types
+  --cpu-type=CPU_TYPE   type of cpu to run with
+  --checker             
+  -n NUM_CPUS, --num-cpus=NUM_CPUS
+  --sys-voltage=SYS_VOLTAGE
+                        Top-level voltage for blocks running at system
+                        power supply
+  --sys-clock=SYS_CLOCK
+                        Top-level clock for blocks running at system
+                        speed
+  --cpu-clock=CPU_CLOCK
+                        Clock for blocks running at CPU speed
+  --smt                                        Only used if multiple programs
+                        are specified. If true,                       then the
+                        number of threads per cpu is same as the
+                        number of programs.
+  --elastic-trace-en    Enable capture of data dependency and instruction
+                        fetch traces using elastic trace probe.
+  --inst-trace-file=INST_TRACE_FILE
+                        Instruction fetch trace file input to
+                        Elastic Trace probe in a capture simulation and
+                        Trace CPU in a replay simulation
+  --data-trace-file=DATA_TRACE_FILE
+                        Data dependency trace file input to
+                        Elastic Trace probe in a capture simulation and
+                        Trace CPU in a replay simulation
+  --list-mem-types      List available memory types
+  --mem-type=MEM_TYPE   type of memory to use
+  --mem-channels=MEM_CHANNELS
+                        number of memory channels
+  --mem-ranks=MEM_RANKS
+                        number of memory ranks per channel
+  --mem-size=MEM_SIZE   Specify the physical memory size (single memory)
+  -l, --lpae            
+  -V, --virtualisation  
+  --memchecker          
+  --external-memory-system=EXTERNAL_MEMORY_SYSTEM
+                        use external ports of this port_type for caches
+  --tlm-memory=TLM_MEMORY
+                        use external port for SystemC TLM cosimulation
+  --caches              
+  --l2cache             
+  --fastmem             
+  --num-dirs=NUM_DIRS   
+  --num-l2caches=NUM_L2CACHES
+  --num-l3caches=NUM_L3CACHES
+  --l1d_size=L1D_SIZE   
+  --l1i_size=L1I_SIZE   
+  --l2_size=L2_SIZE     
+  --l3_size=L3_SIZE     
+  --l1d_assoc=L1D_ASSOC
+  --l1i_assoc=L1I_ASSOC
+  --l2_assoc=L2_ASSOC   
+  --l3_assoc=L3_ASSOC   
+  --cacheline_size=CACHELINE_SIZE
+  --ruby                
+  -m TICKS, --abs-max-tick=TICKS
+                        Run to absolute simulated tick specified including
+                        ticks from a restored checkpoint
+  --rel-max-tick=TICKS  Simulate for specified number of ticks relative to the
+                        simulation start tick (e.g. if restoring a checkpoint)
+  --maxtime=MAXTIME     Run to the specified absolute simulated time in
+                        seconds
+  -I MAXINSTS, --maxinsts=MAXINSTS
+                        Total number of instructions to
+                        simulate (default: run forever)
+  --work-item-id=WORK_ITEM_ID
+                        the specific work id for exit & checkpointing
+  --num-work-ids=NUM_WORK_IDS
+                        Number of distinct work item types
+  --work-begin-cpu-id-exit=WORK_BEGIN_CPU_ID_EXIT
+                        exit when work starts on the specified cpu
+  --work-end-exit-count=WORK_END_EXIT_COUNT
+                        exit at specified work end count
+  --work-begin-exit-count=WORK_BEGIN_EXIT_COUNT
+                        exit at specified work begin count
+  --init-param=INIT_PARAM
+                        Parameter available in simulation with m5
+                        initparam
+  --initialize-only     Exit after initialization. Do not simulate time.
+                        Useful when gem5 is run as a library.
+  --simpoint-profile    Enable basic block profiling for SimPoints
+  --simpoint-interval=SIMPOINT_INTERVAL
+                        SimPoint interval in num of instructions
+  --take-simpoint-checkpoints=TAKE_SIMPOINT_CHECKPOINTS
+                        <simpoint file,weight file,interval-length,warmup-
+                        length>
+  --restore-simpoint-checkpoint
+                        restore from a simpoint checkpoint taken with --take-
+                        simpoint-checkpoints
+  --take-checkpoints=TAKE_CHECKPOINTS
+                        <M,N> take checkpoints at tick M and every N ticks
+                        thereafter
+  --max-checkpoints=MAX_CHECKPOINTS
+                        the maximum number of checkpoints to drop
+  --checkpoint-dir=CHECKPOINT_DIR
+                        Place all checkpoints in this absolute directory
+  -r CHECKPOINT_RESTORE, --checkpoint-restore=CHECKPOINT_RESTORE
+                        restore from checkpoint <N>
+  --checkpoint-at-end   take a checkpoint at end of run
+  --work-begin-checkpoint-count=WORK_BEGIN_CHECKPOINT_COUNT
+                        checkpoint at specified work begin count
+  --work-end-checkpoint-count=WORK_END_CHECKPOINT_COUNT
+                        checkpoint at specified work end count
+  --work-cpus-checkpoint-count=WORK_CPUS_CHECKPOINT_COUNT
+                        checkpoint and exit when active cpu count is reached
+  --restore-with-cpu=RESTORE_WITH_CPU
+                        cpu type for restoring from a checkpoint
+  --repeat-switch=REPEAT_SWITCH
+                        switch back and forth between CPUs with period <N>
+  -s STANDARD_SWITCH, --standard-switch=STANDARD_SWITCH
+                        switch from timing to Detailed CPU after warmup period
+                        of <N>
+  -p PROG_INTERVAL, --prog-interval=PROG_INTERVAL
+                        CPU Progress Interval
+  -W WARMUP_INSTS, --warmup-insts=WARMUP_INSTS
+                        Warmup period in total instructions (requires
+                        --standard-switch)
+  --bench=BENCH         base names for --take-checkpoint and --checkpoint-
+                        restore
+  -F FAST_FORWARD, --fast-forward=FAST_FORWARD
+                        Number of instructions to fast forward before
+                        switching
+  -S, --simpoint        Use workload simpoints as an instruction offset for
+                        --checkpoint-restore or --take-checkpoint.
+  --at-instruction      Treat value of --checkpoint-restore or --take-
+                        checkpoint as a                 number of
+                        instructions.
+  --spec-input=SPEC_INPUT
+                        Input set size for SPEC CPU2000 benchmarks.
+  --arm-iset=ARM_ISET   ARM instruction set.
+  -c CMD, --cmd=CMD     The binary to run in syscall emulation mode.
+  -o OPTIONS, --options=OPTIONS
+                        The options to pass to the binary, use " "
+                        around the entire string
+  -e ENV, --env=ENV     Initialize workload environment from text file.
+  -i INPUT, --input=INPUT
+                        Read stdin from a file.
+  --output=OUTPUT       Redirect stdout to a file.
+  --errout=ERROUT       Redirect stderr to a file.
+  --cpu-only-mode       APU mode. Used to take care of problems in Ruby.py
+                        while running APU protocols
+  -k KERNEL_FILES, --kernel-files=KERNEL_FILES
+                        file(s) containing GPU kernel code (colon separated)
+  -u NUM_COMPUTE_UNITS, --num-compute-units=NUM_COMPUTE_UNITS
+                        number of GPU compute units
+  --num-cp=NUM_CP       Number of GPU Command Processors (CP)
+  --benchmark-root=BENCHMARK_ROOT
+                        Root of benchmark directory tree
+  --cu-per-sqc=CU_PER_SQC
+                        number of CUssharing an SQC (icache, and thus icache
+                        TLB)
+  --simds-per-cu=SIMDS_PER_CU
+                        SIMD unitsper CU
+  --wf-size=WF_SIZE     Wavefront size(in workitems)
+  --sp-bypass-path-length=SP_BYPASS_PATH_LENGTH
+                        Number of stages of bypass path in vector ALU for
+                        Single Precision ops
+  --dp-bypass-path-length=DP_BYPASS_PATH_LENGTH
+                        Number of stages of bypass path in vector ALU for
+                        Double Precision ops
+  --issue-period=ISSUE_PERIOD
+                        Number of cycles per vector instruction issue period
+  --glbmem-wr-bus-width=GLBMEM_WR_BUS_WIDTH
+                        VGPR to Coalescer (Global Memory) data bus width in
+                        bytes
+  --glbmem-rd-bus-width=GLBMEM_RD_BUS_WIDTH
+                        Coalescer to VGPR (Global Memory) data bus width in
+                        bytes
+  --shr-mem-pipes-per-cu=SHR_MEM_PIPES_PER_CU
+                        Number of Shared Memory pipelines per CU
+  --glb-mem-pipes-per-cu=GLB_MEM_PIPES_PER_CU
+                        Number of Global Memory pipelines per CU
+  --wfs-per-simd=WFS_PER_SIMD
+                        Number of WF slots per SIMD
+  --vreg-file-size=VREG_FILE_SIZE
+                        number of physical vector registers per SIMD
+  --bw-scalor=BW_SCALOR
+                        bandwidth scalor for scalability analysis
+  --CPUClock=CPUCLOCK   CPU clock
+  --GPUClock=GPUCLOCK   GPU clock
+  --cpu-voltage=CPU_VOLTAGE
+                        CPU  voltage domain
+  --gpu-voltage=GPU_VOLTAGE
+                        CPU  voltage domain
+  --CUExecPolicy=CUEXECPOLICY
+                        WF exec policy (OLDEST-FIRST, ROUND-ROBIN)
+  --xact-cas-mode       enable load_compare mode (transactional CAS)
+  --SegFaultDebug       checks for GPU seg fault before TLB access
+  --FunctionalTLB       Assumes TLB has no latency
+  --LocalMemBarrier     Barrier does not wait for writethroughs to complete
+  --countPages          Count Page Accesses and output in per-CU output files
+  --TLB-prefetch=TLB_PREFETCH
+                        prefetch depth forTLBs
+  --pf-type=PF_TYPE     type of prefetch: PF_CU, PF_WF, PF_PHASE, PF_STRIDE
+  --pf-stride=PF_STRIDE
+                        set prefetch stride
+  --numLdsBanks=NUMLDSBANKS
+                        number of physical banks per LDS module
+  --ldsBankConflictPenalty=LDSBANKCONFLICTPENALTY
+                        number of cycles per LDS bank conflict
+  --ruby-clock=RUBY_CLOCK
+                        Clock for blocks running at Ruby system's speed
+  --access-backing-store
+                        Should ruby maintain a second copy of memory
+  --ports=PORTS         used of transitions per cycle which is a proxy
+                        for the number of ports.
+  --topology=TOPOLOGY   check configs/topologies for complete set
+  --mesh-rows=MESH_ROWS
+                        the number of rows in the mesh topology
+  --garnet-network=GARNET_NETWORK
+                        'fixed'|'flexible'
+  --network-fault-model
+                        enable network fault model: see
+                        src/mem/ruby/network/fault_model/
+  --numa-high-bit=NUMA_HIGH_BIT
+                        high order address bit to use for numa mapping. 0 =
+                        highest bit, not specified = lowest bit
+  --recycle-latency=RECYCLE_LATENCY
+                        Recycle latency for ruby controller input buffers
+  --num-subcaches=NUM_SUBCACHES
+  --l3-data-latency=L3_DATA_LATENCY
+  --l3-tag-latency=L3_TAG_LATENCY
+  --cpu-to-dir-latency=CPU_TO_DIR_LATENCY
+  --gpu-to-dir-latency=GPU_TO_DIR_LATENCY
+  --no-resource-stalls  
+  --num-tbes=NUM_TBES   
+  --l2-latency=L2_LATENCY
+  --num-tccs=NUM_TCCS   number of TCC directories and banks in the GPU
+  --TCP_latency=TCP_LATENCY
+                        TCP latency
+  --TCC_latency=TCC_LATENCY
+                        TCC latency
+  --tcc-size=TCC_SIZE   agregate tcc size
+  --tcp-size=TCP_SIZE   tcp size
+  --tcc-dir-factor=TCC_DIR_FACTOR
+                        TCCdir size = factor *(TCPs + TCC)
+  --TLB-config=TLB_CONFIG
+                        Options are: perCU (default), mono, 2CU, or perLane
+  --L1TLBentries=L1TLBENTRIES
+  --L1TLBassoc=L1TLBASSOC
+  --L1AccessLatency=L1ACCESSLATENCY
+                        latency in gpu cycles
+  --L1MissLatency=L1MISSLATENCY
+                        latency (in gpu cycles) of a page walk, if this is a
+                        last level TLB
+  --L1MaxOutstandingReqs=L1MAXOUTSTANDINGREQS
+  --L1AccessDistanceStat
+  --tot-L1TLB-size=TOT_L1TLB_SIZE
+  --L2TLBentries=L2TLBENTRIES
+  --L2TLBassoc=L2TLBASSOC
+  --L2AccessLatency=L2ACCESSLATENCY
+                        latency in gpu cycles
+  --L2MissLatency=L2MISSLATENCY
+                        latency (in gpu cycles) of a page walk, if this is a
+                        last level TLB
+  --L2MaxOutstandingReqs=L2MAXOUTSTANDINGREQS
+  --L2AccessDistanceStat
+  --L3TLBentries=L3TLBENTRIES
+  --L3TLBassoc=L3TLBASSOC
+  --L3AccessLatency=L3ACCESSLATENCY
+                        latency in gpu cycles
+  --L3MissLatency=L3MISSLATENCY
+                        latency (in gpu cycles) of a page walk
+  --L3MaxOutstandingReqs=L3MAXOUTSTANDINGREQS
+  --L3AccessDistanceStat
+  --L1ProbesPerCycle=L1PROBESPERCYCLE
+  --L1CoalescingWindow=L1COALESCINGWINDOW
+  --L1DisableCoalescing
+  --L2ProbesPerCycle=L2PROBESPERCYCLE
+  --L2CoalescingWindow=L2COALESCINGWINDOW
+  --L2DisableCoalescing
+  --L3ProbesPerCycle=L3PROBESPERCYCLE
+  --L3CoalescingWindow=L3COALESCINGWINDOW
+  --L3DisableCoalescing
